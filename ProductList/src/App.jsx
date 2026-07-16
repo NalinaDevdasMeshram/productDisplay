@@ -1,122 +1,91 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [productList, setProductList] = useState([]);
+  const [searchProduct, setSearchProduct] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const productData = await fetch(`https://fakestoreapi.com/products`);
+      const result = await productData.json();
+      setProductList(result);
+      console.log("result:", result);
+    } catch (error) {
+      console.log("Unable to fetch the Data ", message.error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const filteredProducts = productList.filter((product) =>
+    product.title.toLowerCase().includes(searchProduct.toLowerCase()),
+  );
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="container mt-4">
+      <h2 className="text-center mb-4">product List</h2>
+      <input
+        type="text"
+        className="form-control mb-4"
+        placeholder="Search Product..."
+        value={searchProduct}
+        onChange={(e) => setSearchProduct(e.target.value)}
+        required
+      />
+      {loading ? (
+        <div className="text-center">
+          <div className="spinner-border"></div>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      ) : (
+        <div className="row">
+          {filteredProducts.map((product) => (
+            <div
+              className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4"
+              key={product.id}
+            >
+              <div className="card h-100">
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="card-img-top p-3"
+                  style={{
+                    height: "250px",
+                    objectFit: "contain",
+                  }}
+                />
 
-      <div className="ticks"></div>
+                <div className="card-body">
+                  <h6>{product.title}</h6>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+                  <p>
+                    <strong>Price:</strong> ${product.price}
+                  </p>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+                  <p>
+                    <strong>Category:</strong>
+                    {product.category}
+                  </p>
+
+                  <p>
+                    <strong>Rating:</strong>
+                    {product.rating?.rate || "N/A"} ⭐
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
