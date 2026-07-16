@@ -2,8 +2,7 @@
 
 ## Overview
 
-This project is a responsive product listing application built with **Next.js**, **React.js**, and **Bootstrap**. It fetches product data from the Fake Store API using **Server-Side Rendering (SSR)** with `getServerSideProps`.
-
+This project is a responsive product listing application built with React.js and Bootstrap.It fetches product data from the Fake Store API using Server-Side Rendering (SSR) with `getServerSideProps`.
 Users can browse products, search products by title, and view important product information in a clean, responsive layout.
 
 ---
@@ -233,3 +232,7 @@ npm run dev
 ## Author
 
 Developed using React.js,Bootstrap, and Fake Store API.
+
+## Project Preview
+
+<img src="./src/assets/image.png" width="800" alt="Homepage" />
